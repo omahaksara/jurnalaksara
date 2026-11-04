@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "description": "Daftar workspace lokal Omah Aksara. Semua path relatif terhadap folder ai-hub.",
+  "repositories": [
+    {
+      "id": "jurnalaksara",
+      "name": "Jurnal Aksara + AI Hub",
+      "remote": "omahaksara/jurnalaksara",
+      "path": "..",
+      "role": "Pusat alat bantu AI dan jurnal",
+      "readme": "README.md"
+    },
+    {
+      "id": "invitation",
+      "name": "Omah Aksara Invitation",
+      "remote": "omahaksara/invitation",
+      "path": "../../invitation",
+      "role": "Engine undangan, tema, data klien, RSVP dan buku tamu",
+      "readme": "README.md",
+      "sensitive": true
+    },
+    {
+      "id": "catalog",
+      "name": "Omah Aksara Catalog",
+      "remote": "omahaksara/omahaksara.github.io",
+      "path": "../../omahaksara.github.io",
+      "role": "Katalog publik, demo, dan router URL pendek",
+      "readme": "README.md"
+    },
+    {
+      "id": "ruangkelas",
+      "name": "RuangKelas",
+      "remote": "omahaksara/ruangkelas",
+      "path": "../../ruangkelas",
+      "role": "Workspace administrasi dan pembelajaran guru",
+      "readme": "README.md",
+      "sensitive": true
+    }
+  ]
+}
