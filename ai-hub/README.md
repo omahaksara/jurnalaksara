@@ -1,25 +1,29 @@
 # Jurnal Aksara — AI Hub
 
-Pusat kerja AI berbasis Python untuk membantu penulisan, pendidikan, pemrograman, ilustrasi, dan produksi konten. Komponen yang tersedia:
+Pusat kerja AI online untuk membantu penulisan, pendidikan, pemrograman, ilustrasi, dan produksi konten. Tidak memerlukan GPU lokal.
 
-- **Gemini** untuk tanya jawab, artikel, ide, naskah, kode, storyboard, dan prompt visual (free tier memiliki kuota/batas).
-- **Pollinations** untuk membuat gambar dari prompt (API key diperlukan; kredit dan biaya mengikuti akun/model).
-- **ComfyUI lokal** untuk menjalankan workflow gambar atau video open-source di komputer sendiri. Tidak ada biaya API, tetapi membutuhkan komputer/GPU dan model yang sesuai.
+## Layanan
 
-Hasil disimpan ke `ai-hub/output/` secara lokal dan tidak otomatis diunggah ke GitHub.
+- **Gemini API** — tanya jawab, artikel, ide konten, materi pendidikan, kode, naskah, dan storyboard. Kuota gratis mengikuti kebijakan Google.
+- **Pollinations** — pembuatan gambar online. Memerlukan API key; kredit dan biaya mengikuti akun.
+- **Magic Hour API** — pembuatan video online dari teks. Akun baru menawarkan kredit percobaan tanpa kartu kredit menurut halaman API, tetapi jumlah kredit, model yang dapat dipakai, resolusi, dan hak penggunaan dapat berubah. Setiap render memakai kredit. AI Hub meminta konfirmasi eksplisit sebelum mengirim job video.
 
-## Biaya dan batasan penting
+Semua hasil yang berhasil diunduh disimpan di `ai-hub/output/` secara lokal dan tidak otomatis diunggah ke GitHub.
 
-Tidak ada janji penggunaan gratis tanpa batas. Gemini memiliki kuota gratis yang dapat berubah. Pollinations memerlukan API key dan ketersediaan kredit gratis bergantung akun. ComfyUI dapat digunakan tanpa biaya API jika dijalankan sendiri, tetapi perangkat, listrik, ruang penyimpanan, waktu render, dan model yang diunduh tetap menjadi tanggung jawab pengguna. Jangan memasukkan API key ke source code atau commit Git.
+## Biaya dan keamanan
+
+AI Hub tidak mengklaim layanan ini gratis tanpa batas. Gemini memiliki kuota sesuai model dan wilayah. Pollinations menggunakan API key dan saldo/kredit akun. Magic Hour menyediakan kredit percobaan untuk akun baru, tetapi render berikutnya atau model/resolusi tertentu dapat membutuhkan kredit tambahan atau paket berbayar. Periksa saldo dan biaya di dashboard sebelum membuat media.
+
+Tidak ada API key yang ditanam dalam source code. Jangan pernah commit file `.env` atau membagikan key.
 
 ## 1. Persiapan
 
 - Python 3.10+
-- API key Gemini dari [Google AI Studio](https://aistudio.google.com/app/apikey)
-- API key Pollinations dari [Pollinations](https://enter.pollinations.ai/) (opsional jika hanya memakai Gemini/ComfyUI)
-- ComfyUI lokal untuk generasi gambar/video lokal: [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+- Gemini API key dari [Google AI Studio](https://aistudio.google.com/app/apikey)
+- Pollinations API key dari [Pollinations](https://enter.pollinations.ai/) (opsional)
+- Magic Hour API key dari [Developer Dashboard](https://magichour.ai/developer) (opsional, untuk video)
 
-Dari root repositori:
+Dari root repository:
 
 ```bash
 cd ai-hub
@@ -44,9 +48,9 @@ Pasang dependensi:
 python -m pip install -r requirements.txt
 ```
 
-## 2. Konfigurasi
+## 2. Konfigurasi API key
 
-Salin `.env.example` menjadi `.env`, kemudian isi key yang tersedia:
+Salin `.env.example` menjadi `.env`.
 
 **Windows PowerShell**
 ```powershell
@@ -58,17 +62,18 @@ Copy-Item .env.example .env
 cp .env.example .env
 ```
 
-Contoh:
+Isi key yang diperlukan:
 
 ```dotenv
 GEMINI_API_KEY=isi_key_google
 POLLINATIONS_API_KEY=isi_key_pollinations
+MAGIC_HOUR_API_KEY=isi_key_magic_hour
 GEMINI_MODEL=gemini-2.5-flash
 POLLINATIONS_MODEL=zimage
-COMFYUI_URL=http://127.0.0.1:8188
+MAGIC_HOUR_VIDEO_MODEL=wan-2.2
 ```
 
-Key yang tidak dipakai boleh dibiarkan kosong. File `.env` sudah dikecualikan dari Git.
+Key untuk layanan yang tidak dipakai boleh dibiarkan kosong.
 
 ## 3. Tanya jawab, menulis, dan coding
 
@@ -90,9 +95,9 @@ Hanya teks/kode tanpa gambar:
 python main.py --prompt "Buat fungsi Python untuk membaca CSV." --no-image
 ```
 
-## 4. Membuat gambar
+## 4. Membuat gambar online
 
-Skrip utama dapat meminta Gemini menyusun jawaban dan prompt ilustrasi, lalu mengirim prompt gambar ke Pollinations:
+Skrip utama meminta Gemini menyusun jawaban dan prompt ilustrasi, lalu mengirim prompt gambar ke Pollinations:
 
 ```bash
 python main.py --prompt "Buat konsep poster perpustakaan sekolah yang hangat."
@@ -104,65 +109,54 @@ Ukuran gambar dapat diatur:
 python main.py --prompt "Ilustrasi ruang baca saat hujan" --width 1024 --height 768
 ```
 
-Jika ingin generasi gambar lokal, gunakan ComfyUI dengan workflow API yang sesuai model gambar Anda; runner `video.py` juga dapat menjalankan workflow ComfyUI gambar maupun video.
+Pembuatan gambar memerlukan key dan kredit/akses yang aktif di akun Pollinations.
 
-## 5. Membuat video dengan ComfyUI lokal
+## 5. Membuat video online
 
-### Persiapan ComfyUI
+AI Hub menggunakan Magic Hour cloud API. Komputasi video berjalan di server penyedia, bukan di laptop/HP Anda.
 
-1. Pasang dan jalankan ComfyUI dari komputer yang memiliki GPU/komputasi memadai.
-2. Pasang model video yang kompatibel (misalnya workflow berbasis Wan atau model video open-source lain). Perhatikan kebutuhan VRAM dan lisensi model.
-3. Buka ComfyUI di browser, susun atau impor workflow video sampai berhasil dijalankan.
-4. Aktifkan **Dev Mode** jika diperlukan, lalu ekspor workflow dalam format **API** (bukan workflow UI biasa) sebagai file JSON.
-5. Pastikan server ComfyUI berjalan. Default URL: `http://127.0.0.1:8188`.
-
-Jalankan workflow:
+Contoh video vertikal:
 
 ```bash
-python video.py --workflow workflow_api.json
+python video.py --prompt "Cinematic vertical video of a cozy school library on a rainy afternoon, warm window light, slow camera push-in, realistic details" --seconds 5 --aspect-ratio 9:16 --resolution 480p --confirm-credit-use
 ```
 
-Workflow bisa berupa workflow video atau gambar. File media hasil dikenali dari output node dan diunduh ke `output/`.
-
-Untuk mengganti prompt teks di salah satu node workflow:
+Contoh video landscape:
 
 ```bash
-python video.py --workflow workflow_api.json --prompt "A cinematic shot of a quiet library in the rain" --prompt-node-id 6
+python video.py --prompt "A cinematic aerial view of green rice fields at sunrise, gentle camera movement" --seconds 5 --aspect-ratio 16:9 --resolution 480p --confirm-credit-use
 ```
 
-Ganti angka `6` dengan ID node prompt pada workflow API Anda. Runner hanya mengganti satu field bernama `text`, `prompt`, `positive`, atau `positive_prompt` yang dikenali secara tunggal. Jika workflow memiliki beberapa field prompt atau struktur berbeda, edit JSON workflow terlebih dahulu. Tiap model/custom node memiliki format dan kebutuhan berbeda; tidak ada satu workflow universal yang otomatis cocok untuk semua model.
+Pengaturan default:
+- Model: `wan-2.2` (dapat diubah melalui `MAGIC_HOUR_VIDEO_MODEL`).
+- Durasi: 5 detik.
+- Rasio: 9:16 (vertikal).
+- Resolusi: 480p untuk preset hemat.
 
-Atur alamat server jika ComfyUI berjalan di komputer/server lain:
-
-```dotenv
-COMFYUI_URL=http://ALAMAT-KOMPUTER:8188
-```
-
-Jangan membuka port ComfyUI ke internet publik tanpa pengamanan jaringan dan autentikasi yang tepat.
+**Penting:** setiap render memakai kredit. Opsi `--confirm-credit-use` wajib agar job tidak terkirim tanpa persetujuan sadar. Periksa saldo, model yang diizinkan pada akun, dan biaya aktual di [Magic Hour Developer Dashboard](https://magichour.ai/developer) sebelum menjalankan. Jangan mengulang job jika status sebelumnya belum jelas; periksa [My Library](https://magichour.ai/my-library) terlebih dahulu untuk menghindari render ganda.
 
 ## 6. Hasil
 
-Semua hasil berada di `output/`:
+Semua file yang diunduh disimpan ke `output/`:
+- `.md` — jawaban teks Gemini.
+- `.png`, `.jpg`, `.webp` — gambar.
+- `.mp4` atau format video hasil SDK — video Magic Hour.
 
-- `.md` — jawaban teks Gemini
-- `.png`, `.jpg`, `.webp` — gambar
-- `.mp4`, `.webm`, `.gif` atau format media lain yang dihasilkan workflow ComfyUI
-
-Output tidak masuk Git karena folder ini diabaikan, kecuali file placeholder.
+Folder output diabaikan Git, sehingga hasil pribadi tidak otomatis masuk repository.
 
 ## Troubleshooting
 
-- **Gemini 401/403:** periksa API key dan status proyek.
-- **Gemini 429:** kuota/rate limit tercapai; tunggu atau cek batas akun.
+- **Gemini 401/403:** periksa API key Google.
+- **Gemini 429:** kuota/rate limit tercapai.
 - **Pollinations 401/402:** key tidak valid atau kredit/anggaran tidak cukup.
-- **ComfyUI connection refused:** pastikan ComfyUI aktif dan `COMFYUI_URL` benar.
-- **ComfyUI node validation error:** workflow mungkin bukan format API atau custom nodes/model belum terpasang.
-- **Video terlalu lambat / out of memory:** gunakan resolusi, durasi, batch, atau model yang lebih ringan; kebutuhan VRAM bergantung workflow.
-- **Tidak ada file output:** pastikan workflow memiliki output node yang menghasilkan file media.
+- **Magic Hour 401:** API key salah atau tidak aktif.
+- **Magic Hour 402:** kredit tidak cukup atau model/fitur memerlukan paket lain.
+- **Video tidak muncul:** periksa status proyek di My Library; jangan mengirim job kedua sebelum status pertama diketahui.
+- **Model/resolusi ditolak:** pilih model dan resolusi yang tersedia untuk akun Anda.
 
-## Referensi
+## Referensi resmi
 
 - [Gemini API](https://ai.google.dev/gemini-api/docs)
 - [Pollinations API](https://gen.pollinations.ai/)
-- [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
-- [ComfyUI server API routes](https://github.com/Comfy-Org/docs/blob/main/development/comfyui-server/comms_routes.mdx)
+- [Magic Hour API](https://docs.magichour.ai/)
+- [Magic Hour Python SDK](https://github.com/magichourhq/magic-hour-python)
