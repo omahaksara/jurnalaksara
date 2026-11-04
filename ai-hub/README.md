@@ -35,6 +35,31 @@ python repos.py inspect ruangkelas
 
 AI Hub hanya membaca metadata Git dan README untuk tahap awal ini. Koneksi API GitHub, analisis source lintas repo, dan aksi tulis/commit tidak dijalankan otomatis. Setiap repo tetap dikelola dan dirilis secara mandiri.
 
+## 0. Membaca konteks proyek Omah Aksara
+
+AI Hub memiliki indeks repo lintas proyek yang bersifat **read-only**. Untuk saat ini, AI Hub hanya membaca metadata repo publik dan README yang didaftarkan; tidak mengambil data undangan pelanggan, data siswa, token, atau file rahasia.
+
+Tampilkan daftar proyek:
+
+```bash
+python ecosystem.py --list
+```
+
+Baca README satu proyek:
+
+```bash
+python ecosystem.py --inspect invitation
+python ecosystem.py --inspect ruangkelas
+```
+
+Buat snapshot README seluruh proyek ke `output/`:
+
+```bash
+python ecosystem.py --snapshot
+```
+
+Daftar repo dan batas akses diatur melalui `ecosystem.json`. Penambahan repo baru cukup dilakukan di registry tersebut. Fitur ini belum melakukan commit, mengubah file, atau deployment ke repo lain; kemampuan tulis lintas repo akan dibuat terpisah dan tetap eksplisit.
+
 ## Layanan
 
 - **Gemini API** — tanya jawab, artikel, ide konten, materi pendidikan, kode, naskah, dan storyboard. Kuota gratis mengikuti kebijakan Google.
