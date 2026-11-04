@@ -2,6 +2,39 @@
 
 Pusat kerja AI online untuk membantu penulisan, pendidikan, pemrograman, ilustrasi, dan produksi konten. Tidak memerlukan GPU lokal.
 
+## Workspace repo Omah Aksara
+
+AI Hub dapat mengenali repo-repo yang Anda clone di satu folder kerja. Fitur ini bersifat **lokal dan read-only**: tidak melakukan commit, push, checkout, mengubah file, atau mengirim source code repo ke layanan AI.
+
+Susunan folder yang disarankan:
+
+```text
+workspace/
+├── invitation/
+├── omahaksara.github.io/
+├── ruangkelas/
+└── jurnalaksara/
+    └── ai-hub/
+```
+
+Jika susunan folder berbeda, sesuaikan path di `workspace.json`.
+
+Perintah dari folder `ai-hub`:
+
+```bash
+python repos.py list
+python repos.py status
+python repos.py inspect invitation
+python repos.py inspect ruangkelas
+```
+
+- `list` menampilkan daftar proyek yang dikenal AI Hub.
+- `status` memeriksa folder, branch, dan perubahan lokal tanpa mengubah apa pun.
+- `inspect` menampilkan remote Git dan cuplikan README repo terpilih.
+- Path lokal disesuaikan melalui `workspace.json`; jangan menaruh data pelanggan atau data siswa di file registry.
+
+AI Hub hanya membaca metadata Git dan README untuk tahap awal ini. Koneksi API GitHub, analisis source lintas repo, dan aksi tulis/commit tidak dijalankan otomatis. Setiap repo tetap dikelola dan dirilis secara mandiri.
+
 ## Layanan
 
 - **Gemini API** — tanya jawab, artikel, ide konten, materi pendidikan, kode, naskah, dan storyboard. Kuota gratis mengikuti kebijakan Google.
