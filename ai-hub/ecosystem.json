@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "description": "Read-only project map for the Jurnal Aksara AI Hub.",
+  "repositories": {
+    "jurnalaksara": {
+      "name": "Jurnal Aksara",
+      "full_name": "omahaksara/jurnalaksara",
+      "role": "Jurnal and AI Hub",
+      "readme": "README.md",
+      "allow_readme_snapshot": true
+    },
+    "invitation": {
+      "name": "Omah Aksara Invitation",
+      "full_name": "omahaksara/invitation",
+      "role": "Invitation engine, themes, client invitation data and RSVP/guestbook integrations",
+      "readme": "README.md",
+      "allow_readme_snapshot": true,
+      "sensitive": true,
+      "never_fetch": ["clients/**", ".env", "**/*secret*", "**/*credential*"]
+    },
+    "catalog": {
+      "name": "Omah Aksara Catalog",
+      "full_name": "omahaksara/omahaksara.github.io",
+      "role": "Public catalog, demos and short-link routing",
+      "readme": "README.md",
+      "allow_readme_snapshot": true
+    },
+    "ruangkelas": {
+      "name": "RuangKelas",
+      "full_name": "omahaksara/ruangkelas",
+      "role": "Teacher workspace and classroom administration",
+      "readme": "README.md",
+      "allow_readme_snapshot": true,
+      "sensitive": true,
+      "never_fetch": ["student-data/**", ".env", "**/*secret*", "**/*credential*"]
+    }
+  }
+}
