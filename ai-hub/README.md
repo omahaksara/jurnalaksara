@@ -1,37 +1,33 @@
 # Jurnal Aksara — AI Hub
 
-AI Hub adalah skrip Python sederhana untuk:
-1. menerima prompt dari terminal;
-2. meminta jawaban teks atau kode dari Google Gemini API (Google AI Studio);
-3. membaca prompt visual yang disertakan Gemini;
-4. mencoba membuat ilustrasi melalui Pollinations.ai; dan
-5. menyimpan hasil teks serta gambar ke folder `output/`.
+Skrip terminal untuk membuat jawaban teks/kode memakai Gemini, mengambil prompt ilustrasi dari jawaban, lalu membuat gambar memakai Pollinations.ai. Semua hasil disimpan di `output/`.
 
-> **Catatan layanan gratis:** Google AI Studio menyediakan kuota gratis dengan batas penggunaan yang dapat berubah menurut model, wilayah, dan kebijakan Google. Pollinations.ai dapat digunakan tanpa API key pada endpoint publiknya, tetapi ketersediaan, batas pemakaian, dan ketentuan layanannya dapat berubah. Skrip tetap menyimpan jawaban teks jika layanan gambar sedang tidak tersedia.
+## Prasyarat
 
-## 1. Persiapan
+- Python 3.10+
+- Gemini API key dari [Google AI Studio](https://aistudio.google.com/app/apikey)
+- Pollinations API key dari [Pollinations](https://enter.pollinations.ai/)
+- Koneksi internet
 
-- Python 3.10 atau lebih baru.
-- API key Gemini dari [Google AI Studio](https://aistudio.google.com/app/apikey).
-- Koneksi internet.
+**Tentang biaya/kuota:** Gemini API memiliki free tier dengan batas pemakaian yang bergantung model, wilayah, dan kebijakan Google. Pollinations saat ini meminta API key untuk permintaan generasi; ketersediaan kredit gratis/biaya mengikuti saldo, model, dan ketentuan akun Pollinations. Jadi jangan menganggap kedua layanan memiliki penggunaan gratis tanpa batas. Periksa halaman akun sebelum penggunaan rutin.
 
-## 2. Instalasi
+## Instalasi
 
-Masuk ke folder `ai-hub`:
+Dari root repositori:
 
 ```bash
 cd ai-hub
 python -m venv .venv
 ```
 
-Aktifkan virtual environment:
+Aktifkan lingkungan:
 
-**Windows (PowerShell):**
+**Windows PowerShell**
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-**macOS / Linux:**
+**macOS/Linux**
 ```bash
 source .venv/bin/activate
 ```
@@ -42,65 +38,59 @@ Pasang dependensi:
 python -m pip install -r requirements.txt
 ```
 
-## 3. Pasang API Key
+## Konfigurasi API key
 
-Buat file bernama `.env` di dalam folder `ai-hub/` (sejajar dengan `main.py`) dengan isi:
+Buat file `.env` di dalam folder `ai-hub/`, sejajar dengan `main.py`:
 
 ```dotenv
-GEMINI_API_KEY=PASTE_API_KEY_ANDA_DI_SINI
-# Opsional:
+GEMINI_API_KEY=ISI_API_KEY_GOOGLE_AI_STUDIO
+POLLINATIONS_API_KEY=ISI_SECRET_KEY_POLLINATIONS
+# Opsional
 GEMINI_MODEL=gemini-2.5-flash
+POLLINATIONS_MODEL=zimage
 ```
 
-Jangan unggah atau commit file `.env`. File ini sudah dikecualikan oleh `.gitignore`.
+Jangan masukkan key asli ke source code atau commit Git. File `.env` sudah dikecualikan oleh `.gitignore`. Gunakan secret key Pollinations hanya di komputer/server pribadi, jangan di aplikasi browser.
 
-## 4. Jalankan
+## Menjalankan
 
-Mode interaktif — program akan meminta prompt:
+Mode interaktif:
 
 ```bash
 python main.py
 ```
 
-Kirim prompt langsung:
+Prompt langsung:
 
 ```bash
-python main.py --prompt "Buatkan artikel singkat tentang kebiasaan membaca."
+python main.py --prompt "Buat artikel singkat tentang kebiasaan membaca."
 ```
 
-Hanya hasil teks tanpa gambar:
+Hanya teks/kode (tanpa gambar):
 
 ```bash
-python main.py --prompt "Buat fungsi Python untuk merapikan data CSV." --no-image
+python main.py --prompt "Buat fungsi Python untuk membaca CSV." --no-image
 ```
 
-Atur ukuran gambar (256–2048 piksel):
+Ukuran gambar:
 
 ```bash
-python main.py --prompt "Ilustrasi suasana perpustakaan yang hangat" --width 1024 --height 768
+python main.py --prompt "Ilustrasi perpustakaan hangat saat hujan" --width 1024 --height 768
 ```
 
-## 5. Hasil
+Ukuran yang diterima: 256–2048 piksel.
 
-File hasil dibuat otomatis di:
+## Hasil
 
-```text
-ai-hub/
-└── output/
-    ├── hasil_YYYYMMDD_HHMMSS.md
-    └── hasil_YYYYMMDD_HHMMSS.png
-```
+`output/` dibuat otomatis dan berisi file Markdown jawaban serta gambar (PNG/JPG/WebP) jika pembuatan gambar berhasil. Hasil lokal tidak diunggah ke GitHub.
 
-Format gambar mengikuti tipe file yang dikirim Pollinations (PNG, JPG, atau WebP). Folder output diabaikan Git agar hasil pribadi tidak ikut terunggah.
+## Troubleshooting
 
-## 6. Pemecahan masalah
+- **Gemini 401/403:** cek key Google AI Studio.
+- **Gemini 429:** kuota/batas permintaan tercapai; tunggu atau periksa penggunaan akun.
+- **Pollinations 401:** key tidak ada atau tidak valid.
+- **Pollinations 402:** saldo/kredit atau anggaran key tidak mencukupi.
+- **Pollinations 429/5xx:** coba lagi nanti atau periksa status layanan.
+- **Model tidak tersedia:** ubah `GEMINI_MODEL` atau `POLLINATIONS_MODEL` ke model yang tersedia di akun/dokumentasi.
 
-- **GEMINI_API_KEY belum diatur:** pastikan file `.env` berada di folder yang sama dengan `main.py`.
-- **401/403 dari Gemini:** periksa API key dan akses Google AI Studio.
-- **429 dari Gemini:** kuota atau batas permintaan mungkin tercapai; tunggu lalu coba kembali.
-- **Gambar gagal dibuat:** layanan Pollinations bisa sedang sibuk/tidak tersedia. Jawaban teks tetap disimpan; ulangi beberapa saat kemudian.
-- **Model tidak tersedia:** ubah `GEMINI_MODEL` pada `.env` ke model Gemini yang tersedia untuk akun Anda.
-
-## Keamanan
-
-Jangan pernah menaruh API key di source code, prompt, tangkapan layar publik, atau commit Git. Jika API key terlanjur terunggah, cabut key tersebut di Google AI Studio dan buat yang baru.
+Dokumentasi: [Gemini API](https://ai.google.dev/gemini-api/docs) · [Pollinations API](https://gen.pollinations.ai/)
